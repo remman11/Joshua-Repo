@@ -7,11 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 class Berth extends Model
 {
     protected $table = 'tblberth';
-    public $primaryKey = 'intBerthID';  
-    public $timestamps = false;
+    protected $primaryKey = 'intBerthID';
     protected $fillable = [
-        'intBerthID',
+        'intBPierID',
         'strBerthName',
-        'boolDeleted'
+        'boolDeleted',
     ];
+
+    public function piers()
+    {
+        return $this->belongsTo('App\Pier','intPierID');
+    }
 }

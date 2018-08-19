@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+
 use Illuminate\Http\Request;
+use Illuminate\Response;
+
+use App\Pier;
 
 class PierController extends Controller
 {
@@ -13,7 +17,8 @@ class PierController extends Controller
      */
     public function index()
     {
-        //
+        $piers = Pier::where('boolDeleted',0)->get();
+        return view('Pier.index')->with('piers',$piers);
     }
 
     /**
@@ -23,7 +28,7 @@ class PierController extends Controller
      */
     public function create()
     {
-        //
+        return view('Pier.create');
     }
 
     /**
@@ -34,7 +39,12 @@ class PierController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $Pier = new Pier;
+        $Pier->timestamps = false;
+        $Pier->strPierName = $request->pierName;
+        $Pier->boolDeleted = 0;
+        $Pier->save();
+
     }
 
     /**
@@ -54,9 +64,10 @@ class PierController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($intPierID)
     {
-        //
+        $piers = Pier::findOrFail($intPierID);
+        return response()->json(['piers' => $piers]);
     }
 
     /**
@@ -66,9 +77,13 @@ class PierController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        
+        $pier = Pier::findOrFail($request->pierID);
+        $pier->timestamps = false;
+        $pier->strPierName = $request->pierName;
+        $pier->save();
     }
 
     /**
@@ -80,5 +95,14 @@ class PierController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function delete($intPierID)
+    {
+        $pier = Pier::findOrFail($intPierID);
+        $pier->timestamps = false;
+        $pier->boolDeleted = 1;
+        $pier->save();
+        return response()->json(['pier' => $pier]);
     }
 }

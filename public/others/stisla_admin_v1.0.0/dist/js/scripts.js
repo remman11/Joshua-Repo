@@ -18,8 +18,8 @@ if(window.Dropzone) {
 $(function() {
 	if($(".main-sidebar").length) {
 		$(".main-sidebar").niceScroll({
-				cursoropacitymin: .1,
-				cursoropacitymax: .8,
+				cursoropacitymin: 0,
+				cursoropacitymax: 1,
 		});
 		var sidebar_nicescroll = $(".main-sidebar").getNiceScroll();
 	

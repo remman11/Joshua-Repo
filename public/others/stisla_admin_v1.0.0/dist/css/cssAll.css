@@ -1,0 +1,58 @@
+html,body{
+    font-family: 'Montserrat', sans-serif;
+}
+.sectionDark{
+  background-color: #ebebeb !important;
+}
+.smCat{
+  font-size: 15px;
+  margin-left:5px;
+}
+.widthBtn{
+  width:70px;
+}
+.widthBtn i{
+  font-size:20px;
+  margin-top: 2px;
+}
+
+.smCat2{
+  font-size: 10px;
+  margin-left:5px;
+}
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+input[type=date]::-webkit-inner-spin-button, 
+input[type=date]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+li:hover{
+  cursor: default;
+}
+.toast {
+  opacity: 1 !important;
+}
+.miniIcon{
+  font-size:15px;
+}
+#footerLogo{
+    height:100px; 
+    width:auto;
+    position: relative;
+    right:5px;
+}
+/* Important part */
+.modal-dialog{
+  overflow-y: initial !important;
+}
+.modalBody{
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+}
+.modal {
+  max-width: 100%;
+}   

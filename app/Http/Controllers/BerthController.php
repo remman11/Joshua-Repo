@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Response;
 use Illuminate\Support\Facades\DB;
+
 use App\Berth;
+use App\Pier;
+
 
 class BerthController extends Controller
 {
@@ -15,8 +19,21 @@ class BerthController extends Controller
      */
     public function index()
     {
-        $results = Berth::all();
-        return view('Berth.berthIndex')->with('berths',$results);
+        
+        $berths = DB::table('tblberth as berth')
+        ->join('tblpier as pier','pier.intPierID','berth.intBPierID')
+        ->select('berth.intBerthID as intBerthID',
+        'berth.strBerthName as strBerthName',
+        'pier.intPierID as intPierID',
+        'pier.strPierName as strPierName',
+        'berth.boolDeleted as boolDeleted')
+        ->where('berth.boolDeleted',0)
+        ->orderBy('pier.intPierID','DESC')
+        ->get();
+        $piers = Pier::where('boolDeleted',0)->get();
+        return view('Berth.index')
+        ->with('berths',$berths)
+        ->with('piers', $piers);
     }
 
     /**
@@ -26,7 +43,10 @@ class BerthController extends Controller
      */
     public function create()
     {
-        return view('Berth.berthCreate');
+        $pier = Pier::where('boolDeleted',0)->get();
+        $order = Berth::find(DB::table('tblberth')->max('intBerthID'));
+
+        return view('Berth.create')->with('piers',$pier);
     }
 
     /**
@@ -37,23 +57,21 @@ class BerthController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request,[
-            'name' => 'required'
-        ]);
         
-        $name = $request->input('name');
-        $berth = DB::table('tblberth')->insertGetId(
-            ['strBerthName' => $name]
-        );
+        $berth = new Berth;
+        
+        $berth->timestamps = false;
+        $berth->intBPierID = $request->pier;
+        $berth->strBerthName= $request->berthName;
+        $berth->boolDeleted = 0;
+        $berth->save();
 
-        //$berth = new Berth;
-        //$berth->name = $request->input('name');
-        //$berth->save();
-
-        return redirect('/berth')->with('success' , 'Berth Added');
+        return response()->json(['berths' => $berth]);
     }
 
     /**
+     * 
+     * 
      * Display the specified resource.
      *
      * @param  int  $id
@@ -61,8 +79,7 @@ class BerthController extends Controller
      */
     public function show($id)
     {
-        $results = Berth::find($id);
-        return view('Berth.berthView')->with('berths',$results);
+        //
     }
 
     /**
@@ -71,9 +88,11 @@ class BerthController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($intBerthID)
     {
-        //
+        $berths = Berth::findOrFail($intBerthID);
+        return response()->json(['berths' => $berths]);
+
     }
 
     /**
@@ -83,9 +102,15 @@ class BerthController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $berth = Berth::findOrFail($request->berthID);
+        $berth->timestamps = false;
+        $berth->strBerthName= $request->berthName;
+        $berth->intBPierID = $request->pier;
+        $berth->save();
+        
+        return response()->json(['berth' => $berth]);
     }
 
     /**
@@ -94,8 +119,20 @@ class BerthController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($intBerthID)
     {
-        //
+ 
+        $berth = Berth::findOrFail($intBerthID);
+        
+    }
+
+    public function delete($intBerthID)
+    {
+
+        $berth = Berth::findOrFail($intBerthID);
+        $berth->timestamps = false;
+        $berth->boolDeleted = 1;
+        $berth->save();
+        return response()->json(['berths' => $berth]);
     }
 }

@@ -3,13 +3,11 @@
 namespace App\Exceptions;
 
 use Exception;
-use Bkwld\LaravelPug\ExceptionHandlerTrait;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
 {
-    use ExceptionHandlerTrait;
     /**
      * A list of the exception types that should not be reported.
      *
@@ -46,8 +44,6 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        //return $this->filterErrorResponse($exception, $request, parent::render($request, $exception));
-        // in case of error we can revert back the changes
         return parent::render($request, $exception);
     }
 
@@ -60,10 +56,10 @@ class Handler extends ExceptionHandler
      */
     protected function unauthenticated($request, AuthenticationException $exception)
     {
-            if ($request->expectsJson()) {
-                return response()->json(['error' => 'Unauthenticated.'], 401);
-            }
-
-            return redirect()->guest(route('login'));
+        if ($request->expectsJson()) {
+            return response()->json(['error' => 'Unauthenticated.'], 401);
         }
+
+        return redirect()->guest(route('login'));
     }
+}
